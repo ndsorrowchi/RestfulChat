@@ -1,0 +1,25 @@
+create table users (uid varchar(40) primary key,
+gender varchar(6) not null default 'secret', 
+yob integer not null, 
+nickname varchar(30) not null, 
+status integer not null default 0, 
+password varchar(20) not null);
+
+insert into users values(‘robot@sis.pitt.edu’,’male’, 2016, ‘Robotie’, 1, ‘hahaha’);
+
+
+create table friends (uid varchar(40), fid varchar(40), 
+foreign key (uid) references users(uid) on delete cascade,
+foreign key (fid) references users(uid) on delete cascade,
+constraint pk_friends primary key (uid, fid));
+
+
+create table post (pid integer GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+fromid varchar(40) not null,
+toid varchar(40) not null,
+msg varchar(200),
+ptime bigint not null,
+foreign key (fromid) references users(uid) on delete cascade,
+foreign key (toid) references users(uid) on delete cascade,
+constraint pk_post primary key (pid)
+);
