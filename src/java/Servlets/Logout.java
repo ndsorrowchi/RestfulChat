@@ -5,6 +5,7 @@
  */
 package Servlets;
 
+import Utils.DBSingleton;
 import beans.userbean;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -53,17 +54,18 @@ public class Logout extends HttpServlet {
                 session.removeAttribute("usrbn");
                 
                 try{
-                    InitialContext initialContext = new InitialContext();
-                    Context context = (Context)initialContext.lookup("java:comp/env");
-                    DataSource ds = (DataSource) context.lookup("mypool");
-                    Connection con = ds.getConnection();
+//                    InitialContext initialContext = new InitialContext();
+//                    Context context = (Context)initialContext.lookup("java:comp/env");
+//                    DataSource ds = (DataSource) context.lookup("mypool");
+//                    Connection con = ds.getConnection();
+                    Connection con = DBSingleton.getInstance().getConnection();
                     String sql="update users set status=0 where uid=?";
                     PreparedStatement ps=con.prepareStatement(sql);
                     ps.setString(1, ub.getUid());
                     ps.executeUpdate();
                 } catch(SQLException ex){
                     Logger.getLogger(Logout.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (NamingException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(Logout.class.getName()).log(Level.SEVERE, null, ex);
                 }       
 //                rd.forward(request, response);     

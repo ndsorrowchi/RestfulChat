@@ -5,6 +5,7 @@
  */
 package Servlets;
 
+import Utils.DBSingleton;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -53,10 +54,11 @@ public class Login extends HttpServlet {
             try{
                 
                 String sql="select password,nickname from users where uid=?";
-                InitialContext initialContext = new InitialContext();
-                Context context = (Context)initialContext.lookup("java:comp/env");
-                DataSource ds = (DataSource) context.lookup("mypool");
-                Connection con = ds.getConnection();
+//                InitialContext initialContext = new InitialContext();
+//                Context context = (Context)initialContext.lookup("java:comp/env");
+//                DataSource ds = (DataSource) context.lookup("mypool");
+//                Connection con = ds.getConnection();
+                Connection con = DBSingleton.getInstance().getConnection();
                 PreparedStatement ps=con.prepareStatement(sql);
                 ps.setString(1, usr);
                 ResultSet sqlres=ps.executeQuery();
@@ -98,10 +100,10 @@ public class Login extends HttpServlet {
                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, sqle);
                 request.setAttribute("errmsg", sqle.getMessage());
                 rderr.forward(request, response);                  
-            } catch (NamingException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
                 request.setAttribute("errmsg", ex.getMessage());
-                rderr.forward(request, response);  
+                rderr.forward(request, response);                  
             }
 
         }

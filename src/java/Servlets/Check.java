@@ -5,6 +5,7 @@
  */
 package Servlets;
 
+import Utils.DBSingleton;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -52,10 +53,11 @@ public class Check extends HttpServlet {
             JSONObject obj = new JSONObject(sb.toString());
             String sql="select count(*) from users where uid=?";
             try{
-                InitialContext initialContext = new InitialContext();
-                Context context = (Context)initialContext.lookup("java:comp/env");
-                DataSource ds = (DataSource) context.lookup("mypool");
-                Connection con = ds.getConnection();
+//                InitialContext initialContext = new InitialContext();
+//                Context context = (Context)initialContext.lookup("java:comp/env");
+//                DataSource ds = (DataSource) context.lookup("mypool");
+//                Connection con = ds.getConnection();
+                Connection con = DBSingleton.getInstance().getConnection();
                 PreparedStatement ps=con.prepareStatement(sql);
                 ps.setString(1, obj.getString("useremail"));
                 ResultSet rs=ps.executeQuery();
@@ -69,9 +71,9 @@ public class Check extends HttpServlet {
                 String responseText="{\"error\":\""+sqle.getMessage()+"\"}";
                 Logger.getLogger(Check.class.getName()).log(Level.SEVERE, null, sqle);
                 out.println(responseText);
-            } catch (NamingException ex) {
+            } catch (Exception ex) {
                 String responseText="{\"error\":\""+ex.getMessage()+"\"}";
-                out.println(responseText);
+                out.println(responseText);                
                 Logger.getLogger(Check.class.getName()).log(Level.SEVERE, null, ex);
             }
                 
